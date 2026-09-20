@@ -1,0 +1,38 @@
+# Operating system and editor files
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Dependencies and generated builds
+node_modules/
+**/node_modules/
+dist/
+**/dist/
+build/
+coverage/
+
+# Browser/test runtime artifacts
+.playwright-cli/
+outputs/
+test-results/
+playwright-report/
+blob-report/
+*.log
+*.tmp
+*.trace
+
+# Local configuration and credentials
+.env
+.env.*
+!.env.example
+*.local
+keys.txt
+**/keys.txt
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt

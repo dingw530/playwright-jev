@@ -1,0 +1,15 @@
+{
+  "name": "demo login E2E",
+  "url": "http://127.0.0.1:4173/",
+  "goal": "Log in with the test account and stop when the Orders page is visibly shown.",
+  "inputs": {
+    "Email": "tester@example.com",
+    "Password": "correct horse battery staple"
+  },
+  "assertions": [
+    { "type": "text_contains", "value": "Orders" },
+    { "type": "text_contains", "value": "tester@example.com" }
+  ],
+  "confidenceThreshold": 0.5,
+  "maxSteps": 12
+}

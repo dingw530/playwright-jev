@@ -1,0 +1,20 @@
+{
+  "name": "Northstar React SPA complex order workflow",
+  "url": "http://127.0.0.1:4175/",
+  "goal": "In the Northstar React Ops Console, first choose the Ready to ship status filter, then search for order 1042 and apply the filters. Open the matching order details, inspect the Activity tab, switch to Customer context, return to Summary, enable the Priority order checkbox, mark the Ops review complete checkbox, and click Confirm dispatch handoff. Stop only when the React modal visibly shows Order #1042, Ready to ship, Priority enabled, Review complete, and Dispatch handoff confirmed. Do not export data, create an order, or change any other order.",
+  "inputs": {
+    "Search orders": "1042"
+  },
+  "assertions": [
+    { "type": "text_contains", "value": "Order #1042" },
+    { "type": "text_contains", "value": "Ready to ship" },
+    { "type": "text_contains", "value": "Priority enabled" },
+    { "type": "text_contains", "value": "Review complete" },
+    { "type": "text_contains", "value": "Dispatch handoff confirmed" },
+    { "type": "text_contains", "value": "Summary overview" },
+    { "type": "text_not_contains", "value": "Exporting all orders" }
+  ],
+  "confidenceThreshold": 0.5,
+  "maxSteps": 14,
+  "maxCandidates": 120
+}

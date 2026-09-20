@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Jev E2E Demo</title>
+    <style>
+      body { font: 16px system-ui, sans-serif; max-width: 42rem; margin: 4rem auto; padding: 0 1rem; }
+      label { display: block; margin: 1rem 0 .35rem; }
+      input { display: block; width: 100%; box-sizing: border-box; padding: .65rem; }
+      button { margin-top: 1rem; padding: .65rem 1rem; }
+      [hidden] { display: none; }
+      .error { color: #a00; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Sign in</h1>
+      <form id="login-form">
+        <label for="email">Email</label>
+        <input id="email" name="email" type="email" autocomplete="username" required>
+        <label for="password">Password</label>
+        <input id="password" name="password" type="password" autocomplete="current-password" required>
+        <button type="submit">Sign in</button>
+        <p id="error" class="error" role="alert" hidden>Invalid credentials</p>
+      </form>
+    </main>
+    <script>
+      document.querySelector('#login-form').addEventListener('submit', (event) => {
+        event.preventDefault();
+        const email = document.querySelector('#email').value;
+        const password = document.querySelector('#password').value;
+        if (email === 'tester@example.com' && password === 'correct horse battery staple') {
+          document.body.innerHTML = `<main><h1>Orders</h1><p>Signed in as ${email}</p><ul><li>Order #1001</li></ul></main>`;
+        } else {
+          document.querySelector('#error').hidden = false;
+        }
+      });
+    </script>
+  </body>
+</html>

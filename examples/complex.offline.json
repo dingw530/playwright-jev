@@ -1,0 +1,30 @@
+{
+  "name": "Northstar Ops complex order workflow (offline browser adapter check)",
+  "url": "http://127.0.0.1:4174/",
+  "goal": "In the Northstar Ops order console, choose Ready to ship, search for order 1042, open its details, inspect Activity, view Customer context, return to Summary, enable Priority order, complete Ops review, and confirm dispatch handoff.",
+  "inputs": {
+    "Search orders": "1042"
+  },
+  "offlineDecisions": [
+    { "operation": "CLICK", "targetLabel": "Ready to ship" },
+    { "operation": "TYPE_TEXT", "targetLabel": "Search orders" },
+    { "operation": "CLICK", "targetLabel": "Apply filters" },
+    { "operation": "CLICK", "targetLabel": "View details for order #1042" },
+    { "operation": "CLICK", "targetLabel": "Activity" },
+    { "operation": "CLICK", "targetLabel": "Customer context" },
+    { "operation": "CLICK", "targetLabel": "Summary" },
+    { "operation": "CHECK", "targetLabel": "Priority order" },
+    { "operation": "CHECK", "targetLabel": "Ops review complete" },
+    { "operation": "CLICK", "targetLabel": "Confirm dispatch handoff" },
+    { "operation": "DONE" }
+  ],
+  "assertions": [
+    { "type": "text_contains", "value": "Order #1042" },
+    { "type": "text_contains", "value": "Ready to ship" },
+    { "type": "text_contains", "value": "Priority enabled" },
+    { "type": "text_contains", "value": "Review complete" },
+    { "type": "text_contains", "value": "Dispatch handoff confirmed" },
+    { "type": "text_contains", "value": "Summary overview" }
+  ],
+  "maxSteps": 16
+}

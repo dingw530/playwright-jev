@@ -1,0 +1,20 @@
+{
+  "name": "demo login E2E (offline browser adapter check)",
+  "url": "http://127.0.0.1:4173/",
+  "goal": "Log in with the test account and stop when the Orders page is visibly shown.",
+  "inputs": {
+    "Email": "tester@example.com",
+    "Password": "correct horse battery staple"
+  },
+  "offlineDecisions": [
+    { "operation": "TYPE_TEXT", "targetLabel": "Email" },
+    { "operation": "TYPE_TEXT", "targetLabel": "Password" },
+    { "operation": "CLICK", "targetLabel": "Sign in" },
+    { "operation": "DONE" }
+  ],
+  "assertions": [
+    { "type": "text_contains", "value": "Orders" },
+    { "type": "text_contains", "value": "tester@example.com" }
+  ],
+  "maxSteps": 8
+}

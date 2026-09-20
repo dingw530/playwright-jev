@@ -1,0 +1,17 @@
+{
+  "name": "playwright-jev",
+  "version": "0.1.0",
+  "private": true,
+  "description": "A Codex skill and CLI for Jev-guided E2E testing through playwright-cli.",
+  "type": "module",
+  "bin": {
+    "playwright-jev": "./scripts/cli.mjs"
+  },
+  "scripts": {
+    "test": "node --test",
+    "check": "node --check scripts/cli.mjs && node --check src/*.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
