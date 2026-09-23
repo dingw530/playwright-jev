@@ -1,6 +1,6 @@
 # Playwright + Jev E2E
 
-一个以 Skill 为入口、以 Node CLI 为核心的语义 E2E 测试工具：
+一个以 Node CLI 为核心的语义 E2E 测试工具：
 
 - `playwright-cli` 观察和执行浏览器动作。
 - Jev 从代码生成的有限动作空间中选择下一步。
@@ -25,37 +25,51 @@
 
 Jev 不能启动浏览器或直接执行 selector。它只能返回当前 observation 中的 `actionId`；selector、ref、输入值、浏览器命令和最终断言都由代码掌控。
 
-## 安装
+## 快速上手
 
-要求：Node.js 20+、可用的 `playwright-cli`。
-
-```bash
-cd /Users/wangding/WorkSpace/personal/playwright-jev
-playwright-cli --version
-npm test
-```
-
-如果没有全局命令，可以按 `playwright-cli` 官方 skill 的方式安装：
+以下命令默认从仓库根目录执行。需要 Node.js 20+、Python 3 和 `playwright-cli`。第一次使用时安装并确认浏览器工具可用：
 
 ```bash
 npm install -g @playwright/cli@latest
+playwright-cli --version
 ```
 
-或者设置自己的可执行文件：
+如果 `playwright-cli` 已安装，可以跳过安装。若它不在 `PATH` 中，可设置 `PLAYWRIGHT_CLI` 指向可执行文件。
+
+### 先跑通本地示例（无需 API Key）
+
+在第一个终端启动仓库自带的登录页：
 
 ```bash
-export PLAYWRIGHT_CLI=/path/to/playwright-cli
+python3 -m http.server 4173 --directory examples/demo-app
 ```
 
-## 运行真实 Jev 模式
+保持服务运行，在仓库根目录另开一个终端执行：
+
+```bash
+node scripts/cli.mjs examples/login.offline.json --offline
+```
+
+看到 `E2E passed: demo login E2E (offline browser adapter check)` 即表示浏览器启动、页面操作和断言链路已跑通。这个示例使用预设动作，不会调用 Jev API，因此只验证本地集成，不代表模型决策效果。
+
+### 接入真实 Jev
+
+先设置 TypeSafe API Key，再运行同一个登录示例：
 
 ```bash
 export TYPESAFE_API_KEY="your-key"
-export TYPESAFE_MODEL="jev-latest"
-export TYPESAFE_ENDPOINT="https://api.typesafe.ai/v1/systemone"
-
 node scripts/cli.mjs examples/login.json
 ```
+
+Endpoint 默认是 `https://api.typesafe.ai/v1/systemone`，模型默认是 `jev-latest`；需要覆盖时再设置 `TYPESAFE_ENDPOINT` 和 `TYPESAFE_MODEL`。此时仍需保持上面的本地 HTTP 服务运行。也可以运行时加 `--headed` 查看浏览器操作：
+
+```bash
+node scripts/cli.mjs examples/login.json --headed
+```
+
+JSON trace 默认写入 `outputs/login-trace.json`，不会记录输入值。运行结果 `passed` 表示 Jev 选择了完成路径且确定性断言通过；其他状态及 trace 字段见下文。
+
+开发者可用 `npm test` 运行仓库测试；`npm run check` 检查 CLI 和源码语法。
 
 ### 快捷模式：不写 JSON
 
@@ -123,29 +137,9 @@ playwright-jev examples/login.json
 
 JSON trace 默认写入 `outputs/login-trace.json`。trace 不记录输入值，只记录页面摘要、动作候选数量、选择结果、概率分布、每次 Jev 请求的 `jevLatencyMs` / `jevAttempts` / `jevUsage`，以及整次运行的 Jev 总耗时和平均耗时。
 
-## 不调用 API 的本地试用
+## 本地离线试用
 
-这个模式用固定决策脚本验证 `playwright-cli` 浏览器适配器、动作执行和断言；它不是 Jev 质量证据。
-
-先启动示例应用：
-
-```bash
-cd examples/demo-app
-python3 -m http.server 4173
-```
-
-另开一个终端：
-
-```bash
-cd /Users/wangding/WorkSpace/personal/playwright-jev
-node scripts/cli.mjs examples/login.offline.json --offline
-```
-
-如果测试通过，应看到：
-
-```text
-E2E passed: demo login E2E (offline browser adapter check)
-```
+无需 API Key 的试跑步骤见[快速上手](#快速上手)。它使用固定决策脚本验证 `playwright-cli` 浏览器适配器、动作执行和断言，不作为 Jev 质量证据。
 
 ## 高复杂度示例
 
@@ -161,15 +155,13 @@ E2E passed: demo login E2E (offline browser adapter check)
 启动并运行真实 Jev 测试：
 
 ```bash
-cd examples/complex-app
-python3 -m http.server 4174
+python3 -m http.server 4174 --directory examples/complex-app
 ```
 
 另开终端：
 
 ```bash
 export TYPESAFE_API_KEY="your-key"
-cd /Users/wangding/WorkSpace/personal/playwright-jev
 node scripts/cli.mjs examples/complex.json --session jev-complex
 ```
 
@@ -197,7 +189,6 @@ Ready to ship 筛选
 
 ```bash
 export TYPESAFE_API_KEY="your-key"
-cd /Users/wangding/WorkSpace/personal/playwright-jev
 
 node scripts/cli.mjs \
   --url http://127.0.0.1:4174/ \
@@ -244,7 +235,7 @@ Trace 位于 `outputs/natural-goal-complex-trace.json`。当前复杂 demo 的�
 安装并构建：
 
 ```bash
-cd /Users/wangding/WorkSpace/personal/playwright-jev/examples/react-spa
+cd examples/react-spa
 npm install
 npm run build
 ```
@@ -258,7 +249,6 @@ npm run dev -- --port 4175
 另开终端，用真实 Jev headed 测试：
 
 ```bash
-cd /Users/wangding/WorkSpace/personal/playwright-jev
 export TYPESAFE_API_KEY="your-key"
 node scripts/cli.mjs examples/react-complex.json --headed --session jev-react-headed
 ```
@@ -355,7 +345,6 @@ DONE 时运行确定性 assertions
 ## 目录
 
 ```text
-SKILL.md                         Codex skill 入口
 scripts/cli.mjs                 CLI 入口
 src/playwright-cli-adapter.mjs  playwright-cli 子进程适配器
 src/action-space.mjs             accessibility snapshot → 有限动作空间
@@ -372,4 +361,3 @@ test/                            不调用网络的单元测试
 - [TypeSafe primitives](https://docs.typesafe.ai/primitives)
 - [Speculative fan-out](https://docs.typesafe.ai/patterns/fan-out)
 - [Confidence-gated routing](https://docs.typesafe.ai/patterns/confidence-routing)
-- [playwright-cli skill](https://github.com/openai/skills/tree/main/skills/playwright-cli)
